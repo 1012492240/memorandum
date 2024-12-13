@@ -324,13 +324,13 @@ export default function Home() {
           <span className="text-xl mb-1">📁</span>
           <span>分类管理</span>
         </button>
-        <button onClick={() => router.push('/profile')} className="nav-item">
-          <span className="text-xl mb-1">👤</span>
-          <span>个人信息</span>
-        </button>
         <button onClick={() => router.push('/ai-chat')} className="nav-item">
           <span className="text-xl mb-1">🤖</span>
           <span>AI聊天</span>
+        </button>
+        <button onClick={() => router.push('/profile')} className="nav-item">
+          <span className="text-xl mb-1">👤</span>
+          <span>个人信息</span>
         </button>
       </nav>
     </div>
