@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prisma:generate": "prisma generate",
     "dev": "next dev ",
     "build": "next build && npm run prisma:generate",
+    "prisma:generate": "prisma generate",
     "start": "next start",
     "lint": "next lint",
     "reminder": "ts-node --project tsconfig.server.json reminder-server.ts",
