@@ -5,7 +5,7 @@
   "scripts": {
     "prisma:generate": "prisma generate",
     "dev": "next dev ",
-    "build": "next build --no-lint",
+    "build": "next build && npm run prisma:generate",
     "start": "next start",
     "lint": "next lint",
     "reminder": "ts-node --project tsconfig.server.json reminder-server.ts",
