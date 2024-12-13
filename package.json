@@ -36,12 +36,12 @@
     "jsonwebtoken": "^9.0.2",
     "next": "15.0.3",
     "node-schedule": "^2.1.1",
+    "prisma": "^6.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-quill": "^2.0.0",
     "ts-node": "^10.9.2",
-    "web-push": "^3.5.0",
-    "prisma": "^6.0.1"
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
