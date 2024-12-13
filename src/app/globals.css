@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #2563eb;
+  --background: #f8fafc;
+  --text: #1f2937;
+}
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--text);
+  background: var(--background);
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 自定义工具类 */
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 active:scale-95 transform;
+  }
+
+  .btn-outline {
+    @apply px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors duration-200 active:scale-95 transform;
+  }
+
+  .input-field {
+    @apply w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
+  }
+
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t md:hidden flex justify-around items-center py-3 px-4 z-50;
+  }
+
+  .nav-item {
+    @apply flex flex-col items-center text-sm text-gray-600 hover:text-blue-600;
+  }
+
+  .back-icon {
+    @apply w-6 h-6 stroke-[2.5];
+  }
+
+  .input::placeholder{
+    color: gray;
+  }
+
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+input::placeholder {
+  color: rgb(98, 95, 95);
+  font-size: 16px;
+  /* 设置占位符文本颜色 */
+  /* font-style: italic; */
+  /* 可选：设置字体样式 */
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+  .container-custom {
+    @apply px-4;
+  }
+
+  .card {
+    @apply rounded-lg shadow-sm;
+  }
+}
