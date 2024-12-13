@@ -72,7 +72,7 @@ async function checkReminders() {
             }
         }
     } catch (err) {
-        console.error('检查提醒失败:', err);
+        console.error('检查提醒失败1:', err);
     }
 }
 
