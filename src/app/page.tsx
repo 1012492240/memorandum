@@ -33,7 +33,7 @@ export default function Home() {
 
     const token = localStorage.getItem('token');
     if (!token) {
-
+      console.log('未登录')
       router.push('/auth/login');
     } else {
 
