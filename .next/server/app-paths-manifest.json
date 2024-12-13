@@ -1,6 +1,13 @@
 {
-  "/api/auth/login/route": "app/api/auth/login/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/auth/login/page": "app/auth/login/page.js",
-  "/page": "app/page.js"
+  "/api/categories/route": "app/api/categories/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/notes/route": "app/api/notes/route.js",
+  "/api/reminders/check/route": "app/api/reminders/check/route.js",
+  "/api/notes/[id]/route": "app/api/notes/[id]/route.js",
+  "/api/notifications/subscribe/route": "app/api/notifications/subscribe/route.js",
+  "/page": "app/page.js",
+  "/notes/new/page": "app/notes/new/page.js",
+  "/notes/[id]/page": "app/notes/[id]/page.js",
+  "/notes/[id]/edit/page": "app/notes/[id]/edit/page.js"
 }

@@ -11,15 +11,50 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/auth/login/page": [
+    "/api/categories/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/auth/login/page.js"
+      "static/chunks/app/api/categories/route.js"
     ],
-    "/api/auth/login/route": [
+    "/api/notes/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/api/auth/login/route.js"
+      "static/chunks/app/api/notes/route.js"
+    ],
+    "/notes/new/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/notes/new/page.js"
+    ],
+    "/api/reminders/check/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/reminders/check/route.js"
+    ],
+    "/notes/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/notes/[id]/page.js"
+    ],
+    "/api/notes/[id]/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/notes/[id]/route.js"
+    ],
+    "/notes/[id]/edit/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/notes/[id]/edit/page.js"
+    ],
+    "/api/notifications/subscribe/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/notifications/subscribe/route.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }
