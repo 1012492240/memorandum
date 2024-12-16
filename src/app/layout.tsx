@@ -8,12 +8,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  useEffect(() => {
-    // 启动提醒定时任务
-    console.log('启动提醒定时任务');
-    fetch('/api/reminders/check')
+  // useEffect(() => {
+  //   // 启动提醒定时任务
+  //   console.log('启动提醒定时任务');
+  //   fetch('/api/reminders/check')
 
-  }, []);
+  // }, []);
 
   return (
     <html lang="zh">
