@@ -143,7 +143,10 @@ export default function NoteDetail({ params }: { params: Promise<{ id: string }>
 
                     {/* 笔记内容 */}
                     <div className="prose max-w-none">
-                        <div className="whitespace-pre-wrap">{note.content}</div>
+                        <div
+                            className="w-full"
+                            dangerouslySetInnerHTML={{ __html: note.content }}
+                        />
                     </div>
                 </div>
             </main>

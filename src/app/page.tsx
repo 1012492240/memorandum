@@ -265,7 +265,12 @@ export default function Home() {
                       <span className="text-yellow-500">📌</span>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm line-clamp-3">{note.content}</p>
+                  <div
+                    className="text-gray-600 text-sm line-clamp-3 prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{
+                      __html: note.content.replace(/<[^>]*>/g, '').substring(0, 200) + '...'
+                    }}
+                  />
                   <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
                     <span>{new Date(note.createdAt).toLocaleDateString()}</span>
                     <span className="px-2 py-1 bg-gray-100 rounded-full">

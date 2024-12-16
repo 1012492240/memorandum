@@ -1,7 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { subscribeUserToPush } from '@/lib/webPush';
+import '@wangeditor/editor/dist/css/style.css'; // 引入样式
+import { IDomEditor, IEditorConfig, IToolbarConfig, createEditor, createToolbar } from '@wangeditor/editor';
 
 interface Category {
     id: number;
@@ -31,10 +33,64 @@ export default function NewNote() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+    const [editor, setEditor] = useState<IDomEditor | null>(null);
+    const editorRef = useRef<IDomEditor | null>(null);
 
     useEffect(() => {
         fetchCategories();
     }, []);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        if (editorRef.current) return;
+
+        const editorConfig: Partial<IEditorConfig> = {
+            placeholder: '请输入内容...',
+            onChange: (editor) => {
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    content: editor.getHtml()
+                }));
+            },
+        };
+
+        const toolbarConfig: Partial<IToolbarConfig> = {
+            // 可配置工具栏
+        };
+
+        const editor = createEditor({
+            selector: '#editor-container',
+            config: editorConfig,
+            mode: 'default',
+        });
+
+        createToolbar({
+            editor,
+            selector: '#toolbar-container',
+            config: toolbarConfig,
+        });
+
+        editorRef.current = editor;
+        setEditor(editor);
+
+        return () => {
+            if (editorRef.current) {
+                editorRef.current.destroy();
+                editorRef.current = null;
+            }
+        };
+    }, []);
+
+
+    // 及时销毁 editor ，重要！
+    useEffect(() => {
+        return () => {
+            if (editor == null) return
+            editor.destroy()
+            setEditor(null)
+        }
+    }, [editor])
 
     const fetchCategories = async () => {
         try {
@@ -190,13 +246,8 @@ export default function NewNote() {
 
                     {/* 内容编辑器 */}
                     <div className="mt-4">
-                        <textarea
-                            placeholder="开始写笔记..."
-                            className="w-full h-[calc(100vh-280px)] p-4 bg-white border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                            value={formData.content}
-                            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                            required
-                        />
+                        <div id="toolbar-container"></div>
+                        <div id="editor-container" style={{ border: '1px solid #ccc', height: '400px' }}></div>
                     </div>
 
                     <div className="flex items-center gap-4 mt-4">

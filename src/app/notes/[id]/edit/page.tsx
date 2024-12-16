@@ -1,8 +1,10 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
 import { subscribeUserToPush } from '@/lib/webPush';
+import '@wangeditor/editor/dist/css/style.css';
+import { IDomEditor, IEditorConfig, IToolbarConfig, createEditor, createToolbar } from '@wangeditor/editor';
 
 interface Category {
     id: number;
@@ -32,11 +34,58 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [editor, setEditor] = useState<IDomEditor | null>(null);
+    const editorRef = useRef<IDomEditor | null>(null);
 
     useEffect(() => {
         fetchCategories();
         fetchNoteDetails();
     }, []);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        if (editorRef.current || !formData.content) return;
+
+        const editorConfig: Partial<IEditorConfig> = {
+            placeholder: '请输入内容...',
+            onChange: (editor) => {
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    content: editor.getHtml()
+                }));
+            },
+        };
+
+        const toolbarConfig: Partial<IToolbarConfig> = {};
+
+        try {
+            const editor = createEditor({
+                selector: '#editor-container',
+                config: editorConfig,
+                mode: 'default',
+                html: formData.content,
+            });
+
+            createToolbar({
+                editor,
+                selector: '#toolbar-container',
+                config: toolbarConfig,
+            });
+
+            editorRef.current = editor;
+            setEditor(editor);
+        } catch (err) {
+            console.error('Editor initialization failed:', err);
+        }
+
+        return () => {
+            if (editorRef.current) {
+                editorRef.current.destroy();
+                editorRef.current = null;
+            }
+        };
+    }, [formData.content]);
 
     const fetchCategories = async () => {
         try {
@@ -54,12 +103,11 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
             const res = await fetch(`/api/notes/${resolvedParams.id}`);
             if (!res.ok) throw new Error('获取笔记详情失败');
             const data = await res.json();
+            console.log('笔记详情数据:', data);
 
-            // 处理提醒时间的格式：UTC 转本地时间
             let reminderTime = '';
             if (data.reminderTime) {
                 const date = new Date(data.reminderTime);
-                // 转换为本地时间字符串
                 reminderTime = date.toLocaleString('sv', {
                     year: 'numeric',
                     month: '2-digit',
@@ -70,6 +118,7 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                 }).replace(' ', 'T');
             }
 
+
             setFormData({
                 title: data.title,
                 content: data.content,
@@ -78,6 +127,7 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                 hasReminder: data.hasReminder,
                 reminderTime: reminderTime
             });
+            console.log('设置 formData 完成，content:', data.content);
         } catch (err) {
             setError('获取笔记详情失败');
         }
@@ -89,7 +139,6 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
         setError('');
 
         try {
-            // 处理提醒时间：转换为 UTC 时间
             const reminderData = formData.hasReminder ? {
                 hasReminder: true,
                 reminderTime: new Date(formData.reminderTime).toISOString()
@@ -118,7 +167,6 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* 顶部导航 */}
             <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm z-10">
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
@@ -151,7 +199,6 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                 </div>
             </nav>
 
-            {/* 主要内容 */}
             <main className="pt-20 pb-16 px-4 max-w-3xl mx-auto">
                 {error && (
                     <div className="bg-red-100 text-red-600 p-3 rounded mb-4">
@@ -160,7 +207,6 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* 标题输入 */}
                     <div>
                         <input
                             type="text"
@@ -172,7 +218,6 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                         />
                     </div>
 
-                    {/* 分类和置顶选项 */}
                     <div className="flex items-center gap-6">
                         <div className="flex-1">
                             <select
@@ -203,18 +248,15 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                         </div>
                     </div>
 
-                    {/* 内容编辑器 */}
-                    <div className="mt-4">
-                        <textarea
-                            placeholder="开始写笔记..."
-                            className="w-full h-[calc(100vh-300px)] p-4 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                            value={formData.content}
-                            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                            required
-                        />
+                    <div className="mt-4 bg-white">
+                        <div id="toolbar-container" className="border border-gray-200 rounded-t"></div>
+                        <div
+                            id="editor-container"
+                            className="border border-gray-200 border-t-0 rounded-b"
+                            style={{ height: '400px' }}
+                        ></div>
                     </div>
 
-                    {/* 提醒设置 */}
                     <div className="flex items-center gap-4 mt-4">
                         <label className="flex items-center">
                             <input
