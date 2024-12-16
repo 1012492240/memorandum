@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { subscribeUserToPush } from '@/lib/webPush';
 import '@wangeditor/editor/dist/css/style.css'; // 引入样式
 import { IDomEditor, IEditorConfig, IToolbarConfig, createEditor, createToolbar } from '@wangeditor/editor';
+import dynamic from 'next/dynamic';
 
 interface Category {
     id: number;
@@ -19,6 +20,10 @@ interface FormData {
     reminderTime: string;
 }
 
+const Editor = dynamic(() => import('./editor'), {
+    ssr: false // 禁用服务器端渲染
+});
+
 export default function NewNote() {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
@@ -33,64 +38,10 @@ export default function NewNote() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-    const [editor, setEditor] = useState<IDomEditor | null>(null);
-    const editorRef = useRef<IDomEditor | null>(null);
 
     useEffect(() => {
         fetchCategories();
     }, []);
-
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-
-        if (editorRef.current) return;
-
-        const editorConfig: Partial<IEditorConfig> = {
-            placeholder: '请输入内容...',
-            onChange: (editor) => {
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    content: editor.getHtml()
-                }));
-            },
-        };
-
-        const toolbarConfig: Partial<IToolbarConfig> = {
-            // 可配置工具栏
-        };
-
-        const editor = createEditor({
-            selector: '#editor-container',
-            config: editorConfig,
-            mode: 'default',
-        });
-
-        createToolbar({
-            editor,
-            selector: '#toolbar-container',
-            config: toolbarConfig,
-        });
-
-        editorRef.current = editor;
-        setEditor(editor);
-
-        return () => {
-            if (editorRef.current) {
-                editorRef.current.destroy();
-                editorRef.current = null;
-            }
-        };
-    }, []);
-
-
-    // 及时销毁 editor ，重要！
-    useEffect(() => {
-        return () => {
-            if (editor == null) return
-            editor.destroy()
-            setEditor(null)
-        }
-    }, [editor])
 
     const fetchCategories = async () => {
         try {
@@ -105,6 +56,12 @@ export default function NewNote() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!formData.content.trim()) {
+            setError('笔记内容不能为空');
+            return;
+        }
+
         setIsLoading(true);
         setError('');
 
@@ -246,8 +203,14 @@ export default function NewNote() {
 
                     {/* 内容编辑器 */}
                     <div className="mt-4">
-                        <div id="toolbar-container"></div>
-                        <div id="editor-container" style={{ border: '1px solid #ccc', height: '400px' }}></div>
+                        <Editor
+                            onChange={(html: string) => {
+                                setFormData(prev => ({
+                                    ...prev,
+                                    content: html || ''
+                                }));
+                            }}
+                        />
                     </div>
 
                     <div className="flex items-center gap-4 mt-4">
