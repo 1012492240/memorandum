@@ -20,7 +20,7 @@ interface FormData {
     reminderTime: string;
 }
 
-const Editor = dynamic(() => import('./editor'), {
+const Editor = dynamic(() => import('../components/editor'), {
     ssr: false // 禁用服务器端渲染
 });
 

@@ -5,7 +5,8 @@ import { use } from 'react';
 import { subscribeUserToPush } from '@/lib/webPush';
 import '@wangeditor/editor/dist/css/style.css';
 import { IDomEditor, IEditorConfig, IToolbarConfig, createEditor, createToolbar } from '@wangeditor/editor';
-
+import Editor from '../../components/editor';
+import dynamic from 'next/dynamic';
 interface Category {
     id: number;
     name: string;
@@ -21,6 +22,8 @@ interface FormData {
 }
 
 export default function EditNote({ params }: { params: Promise<{ id: string }> }) {
+
+
     const resolvedParams = use(params);
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
@@ -32,7 +35,7 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
         hasReminder: false,
         reminderTime: ''
     });
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
     const [editor, setEditor] = useState<IDomEditor | null>(null);
     const editorRef = useRef<IDomEditor | null>(null);
@@ -41,51 +44,6 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
         fetchCategories();
         fetchNoteDetails();
     }, []);
-
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-
-        if (editorRef.current || !formData.content) return;
-
-        const editorConfig: Partial<IEditorConfig> = {
-            placeholder: '请输入内容...',
-            onChange: (editor) => {
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    content: editor.getHtml()
-                }));
-            },
-        };
-
-        const toolbarConfig: Partial<IToolbarConfig> = {};
-
-        try {
-            const editor = createEditor({
-                selector: '#editor-container',
-                config: editorConfig,
-                mode: 'default',
-                html: formData.content,
-            });
-
-            createToolbar({
-                editor,
-                selector: '#toolbar-container',
-                config: toolbarConfig,
-            });
-
-            editorRef.current = editor;
-            setEditor(editor);
-        } catch (err) {
-            console.error('Editor initialization failed:', err);
-        }
-
-        return () => {
-            if (editorRef.current) {
-                editorRef.current.destroy();
-                editorRef.current = null;
-            }
-        };
-    }, [formData.content]);
 
     const fetchCategories = async () => {
         try {
@@ -103,7 +61,6 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
             const res = await fetch(`/api/notes/${resolvedParams.id}`);
             if (!res.ok) throw new Error('获取笔记详情失败');
             const data = await res.json();
-            console.log('笔记详情数据:', data);
 
             let reminderTime = '';
             if (data.reminderTime) {
@@ -118,7 +75,6 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                 }).replace(' ', 'T');
             }
 
-
             setFormData({
                 title: data.title,
                 content: data.content,
@@ -127,9 +83,10 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                 hasReminder: data.hasReminder,
                 reminderTime: reminderTime
             });
-            console.log('设置 formData 完成，content:', data.content);
         } catch (err) {
             setError('获取笔记详情失败');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -164,6 +121,8 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
             setIsLoading(false);
         }
     };
+
+    console.log('formData', formData)
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -205,6 +164,7 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                         {error}
                     </div>
                 )}
+
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
@@ -249,12 +209,17 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                     </div>
 
                     <div className="mt-4 bg-white">
-                        <div id="toolbar-container" className="border border-gray-200 rounded-t"></div>
-                        <div
-                            id="editor-container"
-                            className="border border-gray-200 border-t-0 rounded-b"
-                            style={{ height: '400px' }}
-                        ></div>
+
+                        <Editor
+                            onChange={(html) => {
+                                setFormData(prev => ({
+                                    ...prev,
+                                    content: html
+                                }));
+                            }}
+                            formData={formData}
+                        />
+
                     </div>
 
                     <div className="flex items-center gap-4 mt-4">
