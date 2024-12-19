@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 
-const JWT_SECRET = process.env.JWT_SECRET || 121988;
+
 
 export async function POST(request: Request) {
     try {
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
         if (!user) {
             return NextResponse.json(
                 { error: '用户不存在' },
-                { status: 400 }
+                { status: 404 }
             );
         }
 
@@ -35,34 +35,40 @@ export async function POST(request: Request) {
         if (!isValid) {
             return NextResponse.json(
                 { error: '密码错误' },
-                { status: 400 }
+                { status: 401 }
             );
+        }
+
+
+
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined');
         }
 
         const token = jwt.sign(
             { userId: user.id, email: user.email },
-            JWT_SECRET,
+            process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
 
-        // 设置 cookie
-        const cookieStore = cookies();
-        cookieStore.set('token', token, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 // 7天
-        });
-
-        return NextResponse.json({
+        const response = NextResponse.json({
             message: '登录成功',
-            token, // 返回 token 给前端
+            token,
             user: {
                 id: user.id,
                 email: user.email,
                 name: user.name,
-            },
+            }
         });
+
+        response.cookies.set('token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60
+        });
+
+        return response;
     } catch (error) {
         console.error('登录错误详情:', error);
         return NextResponse.json(

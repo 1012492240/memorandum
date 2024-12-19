@@ -205,6 +205,7 @@ export default function NewNote() {
                     <div className="mt-4">
                         <Editor
                             onChange={(html: string) => {
+                                console.log(html, 'html')
                                 setFormData(prev => ({
                                     ...prev,
                                     content: html || ''

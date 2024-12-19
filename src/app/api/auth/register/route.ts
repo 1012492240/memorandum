@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         if (existingUser) {
             return NextResponse.json(
                 { error: '邮箱已被注册' },
-                { status: 400 }
+                { status: 409 }
             );
         }
 
