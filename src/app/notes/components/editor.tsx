@@ -25,6 +25,44 @@ function MyEditor({ onChange, initialContent }: { onChange: (html: string) => vo
         // TS 语法
         // const editorConfig = {                         // JS 语法
         placeholder: '请输入内容...',
+        MENU_CONF: {
+            uploadImage: {
+                server: '/api/upload',
+                fieldName: 'file',
+                maxFileSize: 10 * 1024 * 1024, // 10MB
+                maxNumberOfFiles: 10,
+                allowedFileTypes: ['image/*'],
+                // 自定义上传参数，按照 wangEditor 的返回格式处理
+                customInsert(res: any, insertFn: any) {
+                    if (res.errno === 0) {
+                        // 上传成功
+                        insertFn(res.data.url, res.data.alt, res.data.href)
+                    } else {
+                        console.error('上传失败:', res)
+                    }
+                },
+                // 上传之前触发
+                onBeforeUpload(file: File) {
+                    return file // 返回 false 则停止上传
+                },
+                // 上传进度回调
+                onProgress(progress: number) {
+                    console.log('progress', progress)
+                },
+                // 单个文件上传成功之后
+                onSuccess(file: File, res: any) {
+                    console.log('success', file, res)
+                },
+                // 单个文件上传失败
+                onFailed(file: File, res: any) {
+                    console.log('failed', file, res)
+                },
+                // 上传错误，或者触发 timeout 超时
+                onError(file: File, err: any, res: any) {
+                    console.log('error', file, err, res)
+                },
+            }
+        }
     }
 
 

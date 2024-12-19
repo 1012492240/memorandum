@@ -93,3 +93,34 @@ input::placeholder {
     @apply rounded-lg shadow-sm;
   }
 }
+
+h1 {
+  font-size: 2rem;    /* 32px */
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.5rem;  /* 24px */
+  font-weight: 600;
+  margin-bottom: 0.875rem;
+}
+
+h3 {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+/* 在已有的标题样式后添加 */
+h4 {
+  font-size: 1.125rem;  /* 18px */
+  font-weight: 500;
+  margin-bottom: 0.625rem;
+}
+
+h5 {
+  font-size: 1rem;      /* 16px */
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
