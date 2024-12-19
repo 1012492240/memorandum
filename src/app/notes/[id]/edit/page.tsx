@@ -217,7 +217,8 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                                     content: html
                                 }));
                             }}
-                            formData={formData}
+                            initialContent={formData.content}
+
                         />
 
                     </div>
