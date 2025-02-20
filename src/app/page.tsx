@@ -123,7 +123,7 @@ export default function Home() {
       <nav className="sticky top-0 bg-white/80 backdrop-blur-md shadow-sm z-50">
         <div className="container-custom">
           <div className="flex items-center justify-between h-16">
-            <h1 className="text-xl font-bold text-gray-900">我的备忘录</h1>
+            <h1 className="text-xl font-bold text-gray-900">我的知识库</h1>
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => {

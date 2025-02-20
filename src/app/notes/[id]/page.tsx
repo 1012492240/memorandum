@@ -121,7 +121,7 @@ export default function NoteDetail({ params }: { params: Promise<{ id: string }>
             </nav>
 
             {/* 主要内容 */}
-            <main className="pt-20 pb-16 px-4 max-w-3xl mx-auto">
+            <main className="pt-20 pb-16 px-4  mx-auto">
                 <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
                     {/* 笔记标题和标签 */}
                     <div className="flex items-start justify-between">

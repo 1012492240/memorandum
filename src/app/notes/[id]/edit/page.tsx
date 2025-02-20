@@ -158,7 +158,7 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                 </div>
             </nav>
 
-            <main className="pt-20 pb-16 px-4 max-w-3xl mx-auto">
+            <main className="pt-20 pb-16 px-4  mx-auto">
                 {error && (
                     <div className="bg-red-100 text-red-600 p-3 rounded mb-4">
                         {error}
