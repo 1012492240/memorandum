@@ -63,7 +63,7 @@ export default function Login() {
                     </div>
                     <div className="text-left">
                         <h1 className="text-2xl font-bold text-gray-900">欢迎回来</h1>
-                        <p className="text-sm text-gray-600">登录以继续使用备忘录</p>
+                        <p className="text-sm text-gray-600">登录以继续使用知识库</p>
                     </div>
                 </div>
 

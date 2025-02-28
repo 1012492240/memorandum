@@ -18,8 +18,8 @@ export default function RootLayout({
   return (
     <html lang="zh">
       <head>
-        <title>备忘录</title>
-        <meta name="description" content="备忘录" />
+        <title>知识库</title>
+        <meta name="description" content="知识库" />
       </head>
       <body>
         {children}
