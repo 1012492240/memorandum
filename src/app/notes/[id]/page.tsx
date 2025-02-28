@@ -82,7 +82,7 @@ export default function NoteDetail({ params }: { params: Promise<{ id: string }>
         <div className="min-h-screen bg-gray-50">
             {/* 顶部导航 */}
             <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm z-10">
-                <div className="max-w-5xl mx-auto px-4">
+                <div className=" mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <button
                             onClick={() => router.push('/')}
@@ -121,7 +121,7 @@ export default function NoteDetail({ params }: { params: Promise<{ id: string }>
             </nav>
 
             {/* 主要内容 */}
-            <main className="pt-20 pb-16 px-4 max-w-3xl mx-auto">
+            <main className="pt-20 pb-16 px-4 mx-auto">
                 <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
                     {/* 笔记标题和标签 */}
                     <div className="flex items-start justify-between">

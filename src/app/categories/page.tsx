@@ -110,7 +110,7 @@ export default function Categories() {
                 </div>
             </nav>
 
-            <main className="pt-20 pb-16 px-4 max-w-5xl mx-auto">
+            <main className="pt-20 pb-16 px-4  mx-auto">
                 {error && (
                     <div className="bg-red-100 text-red-600 p-3 rounded mb-4">
                         {error}
