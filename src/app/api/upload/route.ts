@@ -1,7 +1,14 @@
+import OSS from 'ali-oss';
 import { NextResponse } from 'next/server'
-import { writeFile, mkdir, access } from 'fs/promises'
-import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
+
+// 初始化OSS客户端
+const client = new OSS({
+    region: process.env.ALI_OSS_REGION,
+    accessKeyId: process.env.ALI_OSS_ACCESS_KEY_ID!,
+    accessKeySecret: process.env.ALI_OSS_ACCESS_KEY_SECRET!,
+    bucket: process.env.ALI_OSS_BUCKET!,
+});
 
 export async function POST(request: Request) {
     try {
@@ -23,28 +30,25 @@ export async function POST(request: Request) {
             )
         }
 
-        // 获取文件扩展名
-        const ext = path.extname(file.name)
         // 生成唯一文件名
-        const fileName = `${uuidv4()}${ext}`
+        const ext = file.name.split('.').pop();
+        const fileName = `${uuidv4()}.${ext}`;
 
-        // 转换文件为 Buffer
-        const bytes = await file.arrayBuffer()
-        const buffer = Buffer.from(bytes)
+        // 转换文件为Buffer
+        const buffer = Buffer.from(await file.arrayBuffer());
 
-        // 确保上传目录存在
-        const uploadDir = path.join(process.cwd(), 'public/uploads')
-        await createDirIfNotExists(uploadDir)
-
-        // 写入文件
-        const filePath = path.join(uploadDir, fileName)
-        await writeFile(filePath, buffer)
+        // 上传到OSS
+        const result = await client.put(
+            `uploads/${fileName}`, // OSS存储路径
+            buffer,
+            { headers: { 'Content-Type': file.type } }
+        );
 
         // 返回可访问的URL
-        const fileUrl = `/uploads/${fileName}`
+        const fileUrl = result.url;
 
         return NextResponse.json({
-            errno: 0, // wangEditor 需要这个字段
+            errno: 0,
             data: {
                 url: fileUrl,
                 alt: file.name,
@@ -53,7 +57,7 @@ export async function POST(request: Request) {
         })
 
     } catch (error) {
-        console.error('上传文件失败:', error)
+        console.error('上传文件失败:', error);
         return NextResponse.json(
             { error: "上传文件失败" },
             { status: 500 }
@@ -61,19 +65,10 @@ export async function POST(request: Request) {
     }
 }
 
-// 创建目录的辅助函数
-async function createDirIfNotExists(dirPath: string) {
-    try {
-        await access(dirPath)
-    } catch {
-        await mkdir(dirPath, { recursive: true })
-    }
-}
-
-// 限制文件大小为 10MB
+// 保留原有的config配置
 export const config = {
     api: {
         bodyParser: false,
         sizeLimit: '10mb',
     },
-} 
+}; 
