@@ -9,7 +9,7 @@ export default function Login() {
         const token = localStorage.getItem('token');
         if (!token) {
         } else {
-            console.log('已登录')
+            console.log('已登录1')
             router.push('/');
         }
     }, []);
