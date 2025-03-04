@@ -28,7 +28,7 @@ export default function Team() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [memberToDelete, setMemberToDelete] = useState<TeamMember | null>(null);
-
+    console.log('123')
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
