@@ -15,6 +15,7 @@ export default function RootLayout({
 
   // }, []);
 
+  console.log('uuuuuuu')
   return (
     <html lang="zh">
       <head>
