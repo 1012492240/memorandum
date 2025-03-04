@@ -26,7 +26,7 @@ export async function DELETE(req: Request) {
 
             if (!admin || admin.role !== 'ADMIN') {
                 return NextResponse.json(
-                    { error: '只有管理员可以删除团队成员' },
+                    { error: '只有管理员可以删除小伙伴们' },
                     { status: 403 }
                 );
             }
@@ -92,9 +92,9 @@ export async function DELETE(req: Request) {
         }
 
     } catch (error) {
-        console.error('删除团队成员失败:', error);
+        console.error('删除小伙伴们失败:', error);
         return NextResponse.json(
-            { error: '删除团队成员失败' },
+            { error: '删除小伙伴们失败' },
             { status: 500 }
         );
     }

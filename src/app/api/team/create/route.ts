@@ -37,7 +37,7 @@ export async function POST(req: Request) {
 
             if (!admin || admin.role !== 'ADMIN') {
                 return NextResponse.json(
-                    { error: '只有管理员可以创建团队成员账号' },
+                    { error: '只有管理员可以创建小伙伴们账号' },
                     { status: 403 }
                 );
             }

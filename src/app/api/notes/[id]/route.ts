@@ -19,7 +19,7 @@ export async function GET(
         const note = await prisma.note.findFirst({
             where: {
                 id: parseInt(params.id),
-                userId: user.userId as number
+                // userId: user.userId as number
             },
             include: {
                 category: true

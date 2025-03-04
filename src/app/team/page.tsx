@@ -58,7 +58,7 @@ export default function Team() {
         fetchMembers();
     }, [router]);
 
-    // 获取团队成员列表
+    // 获取小伙伴们列表
     const fetchMembers = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -75,12 +75,12 @@ export default function Team() {
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.error || '获取团队成员失败');
+                throw new Error(data.error || '获取小伙伴们失败');
             }
 
             setMembers(data);
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : '获取团队成员失败';
+            const errorMessage = err instanceof Error ? err.message : '获取小伙伴们失败';
             setError(errorMessage);
 
             // 如果是未授权错误，重定向到登录页
@@ -237,7 +237,7 @@ export default function Team() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.75 19.5L8.25 12l7.5-7.5" />
                             </svg>
                         </button>
-                        <h1 className="text-xl font-bold text-blue-800">团队成员</h1>
+                        <h1 className="text-xl font-bold text-blue-800">小伙伴们</h1>
                         {currentUserRole === 'ADMIN' && (
                             <button
                                 onClick={() => setShowCreateForm(true)}
@@ -270,7 +270,7 @@ export default function Team() {
                             </svg>
                         </div>
                         <div className="flex-1 text-center md:text-left">
-                            <h2 className="text-2xl font-bold text-blue-900 mb-2">我的团队</h2>
+                            <h2 className="text-2xl font-bold text-blue-900 mb-2">我的小伙伴</h2>
                             <p className="text-blue-700">共 {members.length} 位成员</p>
                             <p className="text-blue-500 text-sm mt-1">协作更高效，创作更轻松</p>
                         </div>
@@ -280,7 +280,7 @@ export default function Team() {
                 {/* 成员列表 */}
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-blue-100">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-lg font-semibold text-blue-900">团队成员</h2>
+                        <h2 className="text-lg font-semibold text-blue-900">小伙伴们</h2>
                         {currentUserRole === 'ADMIN' && (
                             <button
                                 onClick={() => setShowCreateForm(true)}
@@ -295,7 +295,11 @@ export default function Team() {
                     </div>
                     <div className="space-y-4">
                         {members.map((member) => (
-                            <div key={member.id} className=" cursor-pointer border border-blue-100 rounded-lg p-4 hover:shadow-md transition-all">
+                            <div
+                                key={member.id}
+                                className="cursor-pointer border border-blue-100 rounded-lg p-4 hover:shadow-md transition-all"
+                                onClick={() => router.push(`/team/notes/${member.id}`)}
+                            >
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-lg shadow-sm">
                                         {member.name?.[0]?.toUpperCase() || member.email[0].toUpperCase()}
@@ -315,7 +319,10 @@ export default function Team() {
                                                 </span>
                                                 {currentUserRole === 'ADMIN' && member.role !== 'ADMIN' && (
                                                     <button
-                                                        onClick={() => openDeleteConfirm(member)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            openDeleteConfirm(member);
+                                                        }}
                                                         className="p-1.5 text-red-500 hover:bg-red-50 rounded-full transition-colors"
                                                         title="删除成员"
                                                     >

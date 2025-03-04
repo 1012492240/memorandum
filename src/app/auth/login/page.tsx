@@ -138,14 +138,14 @@ export default function Login() {
                         </button>
                     </form>
 
-                    {/* <div className="mt-4 text-center">
+                    <div className="mt-4 text-center">
                         <span className="text-sm text-gray-500">
                             还没有账号？{' '}
                             <Link href="/auth/register" className="text-blue-600 hover:text-blue-500">
                                 注册新账号
                             </Link>
                         </span>
-                    </div> */}
+                    </div>
                 </div>
 
                 {/* 底部文本 */}

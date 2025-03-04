@@ -85,7 +85,7 @@ export default function NoteDetail({ params }: { params: Promise<{ id: string }>
                 <div className=" mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <button
-                            onClick={() => router.push('/')}
+                            onClick={() => router.back()}
                             className="back-button"
                         >
                             <svg
