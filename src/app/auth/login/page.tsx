@@ -1,9 +1,20 @@
 'use client';
-import { useState } from 'react';
+
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 export default function Login() {
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+        } else {
+            console.log('已登录')
+            router.push('/');
+        }
+    }, []);
+
+
     const router = useRouter();
     const [formData, setFormData] = useState({
         email: '',

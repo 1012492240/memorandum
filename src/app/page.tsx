@@ -437,17 +437,17 @@ export default function Home() {
   );
 }
 
-// 在文件顶部添加动画关键帧
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes blob {
-    0% { transform: translate(0px, 0px) scale(1); }
-    33% { transform: translate(30px, -50px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
-    100% { transform: translate(0px, 0px) scale(1); }
-  }
-`;
-document.head.appendChild(style);
+// // 在文件顶部添加动画关键帧
+// const style = document.createElement('style');
+// style.textContent = `
+//   @keyframes blob {
+//     0% { transform: translate(0px, 0px) scale(1); }
+//     33% { transform: translate(30px, -50px) scale(1.1); }
+//     66% { transform: translate(-20px, 20px) scale(0.9); }
+//     100% { transform: translate(0px, 0px) scale(1); }
+//   }
+// `;
+// document.head.appendChild(style);
 
 // 在 tailwind.config.js 中添加以下配置
 // module.exports = {
