@@ -13,10 +13,17 @@ model User {
     password         String
     name             String?
     pushSubscription String?
+    role             UserRole   @default(USER)
+    isTeamMember     Boolean    @default(false)
     notes            Note[]
     categories       Category[]
     createdAt        DateTime   @default(now())
     updatedAt        DateTime   @updatedAt
+}
+
+enum UserRole {
+    USER
+    ADMIN
 }
 
 model Category {

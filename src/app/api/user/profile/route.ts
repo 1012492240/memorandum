@@ -21,6 +21,7 @@ export async function GET() {
                 email: true,
                 name: true,
                 createdAt: true,
+                role: true,
                 _count: {
                     select: {
                         notes: true,
