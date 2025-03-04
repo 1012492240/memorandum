@@ -22,6 +22,8 @@ export async function GET(_request: Request) {
             }
         });
 
+        console.log(categories, '分类');
+
         return NextResponse.json(categories);
     } catch (err) {
         console.error('获取分类失败:', err);
