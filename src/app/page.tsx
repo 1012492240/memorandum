@@ -238,6 +238,15 @@ export default function Home() {
                   分类管理
                 </button>
                 <button
+                  onClick={() => router.push('/team')}
+                  className="px-4 py-2 text-gray-700 hover:text-blue-600 rounded-full hover:bg-blue-50 transition-all flex items-center"
+                >
+                  <svg className="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  团队成员
+                </button>
+                <button
                   onClick={() => router.push('/ai-chat')}
                   className="px-4 py-2 text-gray-700 hover:text-blue-600 rounded-full hover:bg-blue-50 transition-all flex items-center"
                 >
@@ -414,7 +423,7 @@ export default function Home() {
 
       {/* 移动端导航栏也添加玻璃拟态效果 */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-blue-100/50 md:hidden">
-        <div className="grid grid-cols-4 h-16">
+        <div className="grid grid-cols-5 h-16">
           <button className="nav-item text-blue-600">
             <span className="text-xl mb-1">📝</span>
             <span className="text-xs">笔记</span>
@@ -422,6 +431,10 @@ export default function Home() {
           <button onClick={() => router.push('/categories')} className="nav-item hover:text-blue-600 transition-colors">
             <span className="text-xl mb-1">📁</span>
             <span className="text-xs">分类</span>
+          </button>
+          <button onClick={() => router.push('/team')} className="nav-item hover:text-blue-600 transition-colors">
+            <span className="text-xl mb-1">👥</span>
+            <span className="text-xs">团队</span>
           </button>
           <button onClick={() => router.push('/ai-chat')} className="nav-item hover:text-blue-600 transition-colors">
             <span className="text-xl mb-1">🤖</span>

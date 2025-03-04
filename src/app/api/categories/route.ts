@@ -19,10 +19,22 @@ export async function GET(_request: Request) {
             },
             orderBy: {
                 createdAt: 'desc'
+            },
+            select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                _count: {
+                    select: {
+                        notes: true // 获取与该 Category 关联的 notes 数量
+                    }
+                }
             }
+            // include: {
+            //     notes: true, // 这会把与每个 Category 相关联的 notes 数组一起返回
+            // }
         });
 
-        console.log(categories, '分类');
 
         return NextResponse.json(categories);
     } catch (err) {
