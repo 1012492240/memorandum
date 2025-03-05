@@ -15,9 +15,10 @@ export default function RootLayout({
 
   // }, []);
 
-  console.log('启动提醒定时任务');
-  console.log('启动提醒定时任务');
-  console.log('uuuuuuu')
+  console.log('我是主分支')
+  console.log('我是主分支')
+  console.log('我是主分支')
+
   return (
     <html lang="zh">
       <head>
