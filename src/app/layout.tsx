@@ -15,10 +15,11 @@ export default function RootLayout({
 
   // }, []);
 
-  console.log('我是主分支')
-  console.log('我是主分支')
-  console.log('我是主分支')
-  console.log('我是主分支')
+  console.log('我是主页99')
+  console.log('我是主页99')
+  console.log('我是主页99')
+  console.log('我是主页99')
+
 
   return (
     <html lang="zh">
