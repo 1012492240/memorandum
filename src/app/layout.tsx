@@ -18,6 +18,7 @@ export default function RootLayout({
   console.log('我是主分支')
   console.log('我是主分支')
   console.log('我是主分支')
+  console.log('我是主分支')
 
   return (
     <html lang="zh">
