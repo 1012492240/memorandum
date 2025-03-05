@@ -28,7 +28,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
-
+  console.log('我是测试分支')
   useEffect(() => {
 
     const token = localStorage.getItem('token');
