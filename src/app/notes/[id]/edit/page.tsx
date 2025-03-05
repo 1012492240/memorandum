@@ -24,6 +24,7 @@ interface FormData {
 export default function EditNote({ params }: { params: Promise<{ id: string }> }) {
 
 
+    console.log('打标签测试');
     const resolvedParams = use(params);
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
