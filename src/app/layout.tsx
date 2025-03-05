@@ -15,6 +15,8 @@ export default function RootLayout({
 
   // }, []);
 
+  console.log('启动提醒定时任务');
+  console.log('启动提醒定时任务');
   console.log('uuuuuuu')
   return (
     <html lang="zh">
