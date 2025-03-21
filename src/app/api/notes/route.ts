@@ -62,10 +62,17 @@ export async function GET(request: Request) {
         const page = parseInt(url.searchParams.get('page') || '1');
         const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
         const categoryId = url.searchParams.get('categoryId');
+        const searchTerm = url.searchParams.get('searchTerm');
 
         const whereClause = {
             userId: user.userId as number,
-            ...(categoryId ? { categoryId: parseInt(categoryId) } : {})
+            ...(categoryId ? { categoryId: parseInt(categoryId) } : {}),
+            ...(searchTerm ? {
+                OR: [
+                    { title: { contains: searchTerm, mode: 'insensitive' } },
+                    // { content: { contains: searchTerm } }
+                ]
+            } : {})
         };
 
         // 获取总记录数

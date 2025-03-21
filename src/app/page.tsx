@@ -49,7 +49,7 @@ export default function Home() {
     if (localStorage.getItem('token')) {
       fetchNotes();
     }
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, searchTerm]);
 
   const fetchCategories = async () => {
     try {
@@ -97,6 +97,9 @@ export default function Home() {
       if (selectedCategory !== null) {
         url.searchParams.append('categoryId', selectedCategory.toString());
       }
+      if (searchTerm) {
+        url.searchParams.append('searchTerm', searchTerm);
+      }
       const res = await fetch(url.toString());
       if (!res.ok) throw new Error('获取笔记失败');
       const data = await res.json();
@@ -128,7 +131,8 @@ export default function Home() {
   const filteredNotes = sortedNotes.filter(note => {
     const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       note.content.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
+    const matchesCategory = selectedCategory ? note.categoryId === selectedCategory : true;
+    return matchesSearch && matchesCategory;
   });
 
   const handleLogout = async () => {
@@ -342,7 +346,11 @@ export default function Home() {
                        focus:border-blue-400 focus:ring-4 focus:ring-blue-50 transition-all 
                        bg-white/70 backdrop-blur-md shadow-sm"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+                setNotes([]);
+              }}
             />
             <svg className="w-5 h-5 text-blue-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -386,7 +394,7 @@ export default function Home() {
 
         {/* 笔记卡片增加玻璃拟态效果 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredNotes.map((note) => (
+          {sortedNotes.map((note) => (
             <div
               key={note.id}
               className={`bg-white/70 backdrop-blur-md rounded-2xl shadow-sm 
