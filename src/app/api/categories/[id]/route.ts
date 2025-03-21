@@ -20,7 +20,6 @@ export async function DELETE(
                 { status: 401 }
             );
         }
-
         // 验证分类是否存在且属于当前用户
         const category = await prisma.category.findFirst({
             where: {
