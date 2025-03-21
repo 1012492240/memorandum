@@ -41,10 +41,34 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
     const [editor, setEditor] = useState<IDomEditor | null>(null);
     const editorRef = useRef<IDomEditor | null>(null);
 
+    const [isSave, setIsSave] = useState(0);
+
     useEffect(() => {
         fetchCategories();
         fetchNoteDetails();
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+
+            if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+                setIsSave(prevState => prevState + 1);
+                e.preventDefault();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
     }, []);
+
+    useEffect(() => {
+        console.log(isSave, 'ssss')
+        if (isSave !== 0) {
+            const formEvent = new Event('submit') as React.FormEvent;
+            handleSubmit(formEvent, true);
+        }
+
+    }, [isSave])
+
+
 
     const fetchCategories = async () => {
         try {
@@ -91,7 +115,7 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent, isKeyboardSave = false) => {
         e.preventDefault();
         setIsLoading(true);
         setError('');
@@ -115,7 +139,14 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
             });
 
             if (!res.ok) throw new Error('更新失败');
-            router.push('/');
+
+            if (isKeyboardSave) {
+                // 显示保存成功提示
+                setError('保存成功');
+                setTimeout(() => setError(''), 2000); // 2秒后清除提示
+            } else {
+                router.push('/');
+            }
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -161,7 +192,7 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
 
             <main className="pt-20 pb-16 px-4  mx-auto">
                 {error && (
-                    <div className="bg-red-100 text-red-600 p-3 rounded mb-4">
+                    <div className={`p-3 rounded mb-4 ${error === '保存成功' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                         {error}
                     </div>
                 )}
