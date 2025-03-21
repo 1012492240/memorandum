@@ -35,14 +35,18 @@ export default function Home() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   useEffect(() => {
-
     const token = localStorage.getItem('token');
     if (!token) {
       console.log('未登录')
       router.push('/auth/login');
     } else {
-
       fetchCategories();
+      fetchNotes();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
       fetchNotes();
     }
   }, [currentPage, pageSize]);
@@ -58,6 +62,10 @@ export default function Home() {
       console.error('获取分类失败:', error);
     }
   };
+  useEffect(() => {
+    // 当 selectedCategory 改变时，重新获取 notes
+    fetchNotes();
+  }, [selectedCategory]);
 
   useEffect(() => {
     const handleScroll = async () => {
@@ -83,7 +91,13 @@ export default function Home() {
 
   const fetchNotes = async () => {
     try {
-      const res = await fetch(`/api/notes?page=${currentPage}&pageSize=${pageSize}`);
+      const url = new URL('/api/notes', window.location.origin);
+      url.searchParams.append('page', currentPage.toString());
+      url.searchParams.append('pageSize', pageSize.toString());
+      if (selectedCategory !== null) {
+        url.searchParams.append('categoryId', selectedCategory.toString());
+      }
+      const res = await fetch(url.toString());
       if (!res.ok) throw new Error('获取笔记失败');
       const data = await res.json();
       setNotes(prevNotes => {
@@ -103,6 +117,7 @@ export default function Home() {
     }
   };
 
+
   const sortedNotes = [...notes].sort((a, b) => {
     if (a.isPinned === b.isPinned) {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -113,8 +128,7 @@ export default function Home() {
   const filteredNotes = sortedNotes.filter(note => {
     const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       note.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory ? note.categoryId === selectedCategory : true;
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
   const handleLogout = async () => {
@@ -338,7 +352,12 @@ export default function Home() {
           {/* 分类按钮增加玻璃拟态效果 */}
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => setSelectedCategory(null)}
+              onClick={() => {
+                setSelectedCategory(null);
+                setCurrentPage(1);
+                setNotes([]);
+                fetchNotes();
+              }}
               className={`px-4 py-2 rounded-xl transition-all backdrop-blur-sm ${selectedCategory === null
                 ? 'bg-blue-500/90 text-white shadow-lg shadow-blue-200/50'
                 : 'bg-white/50 text-gray-600 hover:bg-blue-50/50 border border-blue-100/50'
@@ -349,7 +368,11 @@ export default function Home() {
             {categories.map((category) => (
               <button
                 key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
+                onClick={() => {
+                  setSelectedCategory(category.id);
+                  setCurrentPage(1);
+                  setNotes([]);
+                }}
                 className={`px-4 py-2 rounded-xl transition-all backdrop-blur-sm ${selectedCategory === category.id
                   ? 'bg-blue-500/90 text-white shadow-lg shadow-blue-200/50'
                   : 'bg-white/50 text-gray-600 hover:bg-blue-50/50 border border-blue-100/50'

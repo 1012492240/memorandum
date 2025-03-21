@@ -61,19 +61,21 @@ export async function GET(request: Request) {
         const url = new URL(request.url);
         const page = parseInt(url.searchParams.get('page') || '1');
         const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
+        const categoryId = url.searchParams.get('categoryId');
+
+        const whereClause = {
+            userId: user.userId as number,
+            ...(categoryId ? { categoryId: parseInt(categoryId) } : {})
+        };
 
         // 获取总记录数
         const total = await prisma.note.count({
-            where: {
-                userId: user.userId as number
-            }
+            where: whereClause
         });
 
         // 获取分页数据
         const notes = await prisma.note.findMany({
-            where: {
-                userId: user.userId as number
-            },
+            where: whereClause,
             orderBy: {
                 createdAt: 'desc'
             },
