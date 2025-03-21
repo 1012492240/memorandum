@@ -28,6 +28,11 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedNotes, setSelectedNotes] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   useEffect(() => {
 
@@ -40,7 +45,7 @@ export default function Home() {
       fetchCategories();
       fetchNotes();
     }
-  }, []);
+  }, [currentPage, pageSize]);
 
   const fetchCategories = async () => {
     try {
@@ -54,12 +59,43 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const handleScroll = async () => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100 && !isLoadingMore && currentPage < totalPages) {
+        setIsLoadingMore(true);
+        try {
+          const res = await fetch(`/api/notes?page=${currentPage + 1}&pageSize=${pageSize}`);
+          if (!res.ok) throw new Error('获取笔记失败');
+          const data = await res.json();
+          setNotes(prev => [...prev, ...data.notes]);
+          setCurrentPage(prev => prev + 1);
+        } catch (error) {
+          console.error('加载更多笔记失败:', error);
+        } finally {
+          setIsLoadingMore(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [currentPage, totalPages, pageSize, isLoadingMore]);
+
   const fetchNotes = async () => {
     try {
-      const res = await fetch('/api/notes');
+      const res = await fetch(`/api/notes?page=${currentPage}&pageSize=${pageSize}`);
       if (!res.ok) throw new Error('获取笔记失败');
       const data = await res.json();
-      setNotes(data);
+      setNotes(prevNotes => {
+        if (currentPage === 1) return data.notes;
+        // 确保不添加重复的笔记
+        const newNotes = data.notes.filter((newNote: { id: number; }) =>
+          !prevNotes.some(existingNote => existingNote.id === newNote.id)
+        );
+        return [...prevNotes, ...newNotes];
+      });
+      setTotalPages(data.pagination.totalPages);
+      setTotal(data.pagination.total);
     } catch (error) {
       console.log('获取笔记失败:', error);
     } finally {
@@ -419,6 +455,18 @@ export default function Home() {
             </p>
           </div>
         )}
+
+        {/* 加载更多指示器 */}
+        {isLoadingMore && currentPage < totalPages && (
+          <div className="flex justify-center mt-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          </div>
+        )}
+        {currentPage >= totalPages && total > 0 && (
+          <div className="text-center mt-8 text-gray-500">
+            已加载全部内容
+          </div>
+        )}
       </main>
 
       {/* 移动端导航栏也添加玻璃拟态效果 */}
@@ -488,3 +536,5 @@ export default function Home() {
 //     },
 //   },
 // };
+
+
