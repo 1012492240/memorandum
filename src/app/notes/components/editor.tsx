@@ -12,6 +12,7 @@ function MyEditor({ onChange, initialContent }: { onChange: (html: string) => vo
     // 编辑器内容
     const [html, setHtml] = useState(initialContent)
 
+    console.log(html, 'hhhhhh')
 
     useEffect(() => {
         setHtml(initialContent)
