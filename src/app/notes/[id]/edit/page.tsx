@@ -42,6 +42,7 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
     const editorRef = useRef<IDomEditor | null>(null);
 
     const [isSave, setIsSave] = useState(0);
+    const [isOptimizing, setIsOptimizing] = useState(false);
 
     useEffect(() => {
         fetchCategories();
@@ -179,16 +180,59 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                             </svg>
                         </button>
                         <h1 className="text-xl font-semibold">编辑笔记</h1>
-                        <button
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                            className="text-blue-600 font-medium disabled:opacity-50"
-                        >
-                            {isLoading ? '保存中...' : '保存'}
-                        </button>
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        setIsOptimizing(true);
+                                        const res = await fetch('/api/optimize', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                                content: formData.content
+                                            })
+                                        });
+                                        if (!res.ok) throw new Error('优化失败');
+                                        const data = await res.json();
+                                        console.log('优化结果:', data.choices[0].message.content);
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            content: data.choices[0].message.content
+                                        }));
+                                    } catch (err) {
+                                        setError('优化失败');
+                                    } finally {
+                                        setIsOptimizing(false);
+                                    }
+                                }}
+                                className="text-blue-600 font-medium disabled:opacity-50 hover:text-blue-700 flex items-center gap-2"
+                                disabled={isOptimizing}
+                            >
+                                {isOptimizing ? (
+                                    <>
+                                        <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                                        优化中...
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M4 3a1 1 0 011-1h10a1 1 0 011 1v12a1 1 0 01-1 1h-2.586l-2.707 2.707a1 1 0 01-1.414 0L5.586 16H3a1 1 0 01-1-1V3zm1 0v12h2.586l2.707 2.707 2.707-2.707H16V3H5z" clipRule="evenodd" />
+                                        </svg>
+                                        优化
+                                    </>
+                                )}
+                            </button>
+                            <button
+                                onClick={handleSubmit}
+                                disabled={isLoading}
+                                className="text-blue-600 font-medium disabled:opacity-50"
+                            >
+                                {isLoading ? '保存中...' : '保存'}
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </nav>
+            </nav >
 
             <main className="pt-20 pb-16 px-4  mx-auto">
                 {error && (
@@ -289,6 +333,6 @@ export default function EditNote({ params }: { params: Promise<{ id: string }> }
                     </div>
                 </form>
             </main>
-        </div>
+        </div >
     );
 }
