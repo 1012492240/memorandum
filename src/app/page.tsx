@@ -72,7 +72,16 @@ export default function Home() {
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100 && !isLoadingMore && currentPage < totalPages) {
         setIsLoadingMore(true);
         try {
-          const res = await fetch(`/api/notes?page=${currentPage + 1}&pageSize=${pageSize}`);
+          const url = new URL('/api/notes', window.location.origin);
+          url.searchParams.append('page', (currentPage + 1).toString());
+          url.searchParams.append('pageSize', pageSize.toString());
+          if (selectedCategory !== null) {
+            url.searchParams.append('categoryId', selectedCategory.toString());
+          }
+          if (searchTerm) {
+            url.searchParams.append('searchTerm', searchTerm);
+          }
+          const res = await fetch(url.toString());
           if (!res.ok) throw new Error('获取笔记失败');
           const data = await res.json();
           setNotes(prev => [...prev, ...data.notes]);

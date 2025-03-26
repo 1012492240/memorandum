@@ -38,6 +38,7 @@ export default function NewNote() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+    const [isOptimizing, setIsOptimizing] = useState(false);
 
     useEffect(() => {
         fetchCategories();
@@ -120,13 +121,44 @@ export default function NewNote() {
                             </svg>
                         </button>
                         <h1 className="text-xl font-bold">新建笔记</h1>
-                        <button
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                            className="text-blue-600 font-medium disabled:opacity-50 hover:text-blue-700"
-                        >
-                            {isLoading ? '保存中...' : '保存'}
-                        </button>
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        setIsOptimizing(true);
+                                        const res = await fetch('/api/optimize', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                                content: formData.content
+                                            })
+                                        });
+                                        if (!res.ok) throw new Error('优化失败');
+                                        const data = await res.json();
+                                        console.log('优化结果:', data.choices[0].message.content);
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            content: data.choices[0].message.content
+                                        }));
+                                    } catch (err) {
+                                        setError('优化失败，请重试');
+                                    } finally {
+                                        setIsOptimizing(false);
+                                    }
+                                }}
+                                disabled={isOptimizing || !formData.content.trim()}
+                                className="text-blue-600 font-medium disabled:opacity-50 hover:text-blue-700"
+                            >
+                                {isOptimizing ? '优化中...' : '优化'}
+                            </button>
+                            <button
+                                onClick={handleSubmit}
+                                disabled={isLoading}
+                                className="text-blue-600 font-medium disabled:opacity-50 hover:text-blue-700"
+                            >
+                                {isLoading ? '保存中...' : '保存'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -211,6 +243,7 @@ export default function NewNote() {
                                     content: html || ''
                                 }));
                             }}
+                            initialContent={formData.content}
                         />
                     </div>
 
