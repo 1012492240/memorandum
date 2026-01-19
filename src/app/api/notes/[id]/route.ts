@@ -8,6 +8,10 @@ export async function GET(
     { params }: { params: { id: string } }
 ) {
     try {
+
+
+        const parsedParams = await params; 
+
         const user = await getUser();
         if (!user) {
             return NextResponse.json(
@@ -16,9 +20,10 @@ export async function GET(
             );
         }
 
+
         const note = await prisma.note.findFirst({
             where: {
-                id: parseInt(params.id),
+                id: parseInt(parsedParams.id),
                 // userId: user.userId as number
             },
             include: {
@@ -50,6 +55,7 @@ export async function DELETE(
 ) {
     try {
         const user = await getUser();
+        const parsedParams = await params; 
         if (!user) {
             return NextResponse.json(
                 { error: '未授权' },
@@ -60,7 +66,7 @@ export async function DELETE(
         // 验证笔记是否存在且属于当前用户
         const note = await prisma.note.findFirst({
             where: {
-                id: parseInt(params.id),
+                id: parseInt(parsedParams.id),
                 userId: user.userId as number
             }
         });
@@ -75,7 +81,7 @@ export async function DELETE(
         // 删除笔记
         await prisma.note.delete({
             where: {
-                id: parseInt(params.id)
+                id: parseInt(parsedParams.id)
             }
         });
 
@@ -98,6 +104,7 @@ export async function PUT(
 ) {
     try {
         const user = await getUser();
+        const parsedParams = await params; 
         if (!user) {
             return NextResponse.json(
                 { error: '未授权' },
@@ -118,7 +125,7 @@ export async function PUT(
         // 更新笔记
         const note = await prisma.note.update({
             where: {
-                id: parseInt(params.id),
+                id: parseInt(parsedParams.id),
                 userId: user.userId as number
             },
             data: {
